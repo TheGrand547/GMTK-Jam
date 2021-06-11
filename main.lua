@@ -1,26 +1,49 @@
+-- constants
+local width = 10
+local height = 10
+
 -- Called once
 function love.load()
   blocks = {}
-  for x=1,10,1 do
-    for y=1,10,1 do
+  for y=1,width,1 do
+    for x=1,height,1 do
       table.insert(blocks, {x * 51, y * 51})
     end
   end
   love.window.requestAttention()
   love.graphics.setBackgroundColor(1, 1, 1)
+  player = 1
 end
 
 -- Called continuously
 function love.update(dt)
   deltat = dt
+  if love.keyboard.isDown("d") then
+    player = player + 1
+  end
+  if love.keyboard.isDown("a") then
+    player = player - 1
+  end
+  if love.keyboard.isDown("w") then
+    player = player - width
+  end
+  if love.keyboard.isDown("s") then
+    player = player + height
+  end
 end
 
 -- Called continuously
 function love.draw()
     love.graphics.setColor(0, 0, 0)
-    --love.graphics.rectangle("fill", x, y, 50, 50)
     for i,elem in ipairs(blocks) do
+      -- sloppy
+      if i == player then
+        love.graphics.setColor(1, 0, 0)
+      end
       love.graphics.rectangle("fill", elem[1], elem[2], 50, 50)
+      if i == player then
+        love.graphics.setColor(0, 0, 0)
+      end
     end
     love.graphics.print(1 / deltat, 0, 0)
 end
