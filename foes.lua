@@ -1,5 +1,5 @@
 --all enemy stuff
---foe layout, {{color triplet}, x, y}
+--foe layout, {{color triplet}, location}
 require("constants")
 
 
@@ -10,7 +10,7 @@ end
 function drawFoes(foes)
   for i, foe in ipairs(foes) do
     setFoeColor(foe)
-    love.graphics.rectangle("fill", foe[2] * TILE_SCALE, foe[3] * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
+    love.graphics.rectangle("fill", foe[2] * TILE_SCALE, foe[2] * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
   end
 end
 
