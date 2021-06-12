@@ -49,8 +49,8 @@ function love.keypressed(key, scancode, isrepeat)
     local x, y = x1, y1
     while temp ~= playerPrimary and temp ~= nil do
       blocks[temp].clicked = 5
-      x = x + 10 * math.cos(angle)
-      y = y + 10 * math.sin(angle)
+      x = x + 5 * math.cos(angle)
+      y = y + 5 * math.sin(angle)
       temp = blockFromPoint(x, y)
     end
   end
@@ -95,7 +95,7 @@ end
 --index in blocks corresponding to that point on the grid if it's a valid point, nil otherwise
 function blockFromPoint(x, y)
   local index = math.floor(y / TILE_SCALE - 1) * WIDTH + math.floor(x / TILE_SCALE)
-  if x > TILE_SCALE and x <= WIDTH * TILE_SCALE and y > TILE_SCALE and y < HEIGHT * TILE_SCALE and blocks[index] ~= nil then
+  if x >= TILE_SCALE and x <= (WIDTH + 1) * TILE_SCALE and y >= TILE_SCALE and y <= (HEIGHT + 1) * TILE_SCALE and blocks[index] ~= nil then
       return index
   end
   return nil
@@ -107,7 +107,7 @@ function centerFromBlock(index)
   local x = 0
   local y = 0
   if blocks[index] ~= nil then
-    x = blocks[index].x  * TILE_SCALE + TILE_SCALE / 2
+    x = blocks[index].x * TILE_SCALE + TILE_SCALE / 2
     y = blocks[index].y * TILE_SCALE + TILE_SCALE / 2
   end
   return x, y
