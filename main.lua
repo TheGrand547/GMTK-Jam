@@ -1,13 +1,14 @@
 -- constants
 local WIDTH = 10
 local HEIGHT = 10
+local SQUARE_SIDE_LENGTH = 50
 
 -- Called once
 function love.load()
   blocks = {}
   for y=1,HEIGHT,1 do
     for x=1,WIDTH,1 do
-      table.insert(blocks, {x, y})
+      table.insert(blocks, {x, y, false})
     end
   end
   love.window.requestAttention()
@@ -40,10 +41,34 @@ function love.draw()
       if i == player then
         love.graphics.setColor(1, 0, 0)
       end
-      love.graphics.rectangle("fill", elem[1] * 51, elem[2] * 51, 50, 50)
+      if elem[3] then
+        love.graphics.setColor(0, 1, 0)
+      end
+
+      love.graphics.rectangle("fill", elem[1] * 51, elem[2] * 51, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
+
       if i == player then
         love.graphics.setColor(0, 0, 0)
       end
+      if elem[3] then
+        love.graphics.setColor(0, 0, 0)
+        elem[3] = false
+      end
     end
     love.graphics.print(1 / deltat, 0, 0)
+end
+
+function love.mousepressed(x,y,k)
+    colorGridOnClick(x, y)
+end
+
+function colorGridOnClick(x, y) 
+    print("Clicked, x: " .. x .. "\t y: " .. y)
+    for i,elem in ipairs(blocks) do -- I don't know if I like O(n) per click but since n is ~10 it's ok I guess
+        local squareX = elem[1] * 51
+        local squareY = elem[2] * 51
+        if x > squareX and x < squareX + SQUARE_SIDE_LENGTH and y > squareY and y < squareY + SQUARE_SIDE_LENGTH then -- Checks if the mouse is on the grid
+            elem[3] = true
+        end
+    end
 end
