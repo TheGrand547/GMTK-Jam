@@ -1,16 +1,19 @@
 --all enemy stuff
---foe layout, {{color triplet}, location}
+--foe layout, {{color triplet}, tileLocation}
 require("constants")
+require("astar")
 
-
-function doFoeStuff(foes)
-  print("that's a lotta gamers")
+function doFoeStuff(foes, p1, p2, tiles, walls)
+  for i, foe in ipairs(foes) do
+    local new = astar(foe[2], walls, p1, tiles)
+    if new ~= null then foe[2] = new end
+  end
 end
 
-function drawFoes(foes)
+function drawFoes(foes, tiles)
   for i, foe in ipairs(foes) do
     setFoeColor(foe)
-    love.graphics.rectangle("fill", foe[2] * TILE_SCALE, foe[2] * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
+    love.graphics.rectangle("fill", tiles[foe[2]].x * TILE_SCALE, tiles[foe[2]].y * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
   end
 end
 

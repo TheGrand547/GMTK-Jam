@@ -3,13 +3,13 @@ io.stdout:setvbuf("no")
 require("player")
 require("foes")
 require("constants")
-require("astar")
+
 -- Called once
 function love.load()
   tiles = {}
   enemies = {}
   walls = {} -- wall element is just {tile}
-  table.insert(enemies, {{0, 0, 1}, 6})
+  table.insert(enemies, {{0, 0, 1}, 6, 6})
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
       table.insert(tiles, {x = x1, y = y1, clicked = 0})
@@ -29,7 +29,7 @@ function love.update(dt)
   if table.getn(enemies) == 0 then
     playerTurn = true
   elseif playerTurn == false then
-    doFoeStuff(enemies)
+    doFoeStuff(enemies, playerPrimary, playerSecondary, tiles, walls)
     playerTurn = true
   end
 end
@@ -65,7 +65,7 @@ function love.keypressed(key, scancode, isrepeat)
       playerPrimary = playerPrimary - 1
       playerTurn = false
     end
-    if key == "w" and playerPrimary > HEIGHT then
+    if key == "w" and playerPrimary > WIDTH then
       playerPrimary = playerPrimary - WIDTH
       playerTurn = false
     end
@@ -95,7 +95,7 @@ function love.draw()
     --draw secondary player
     drawSecondPlayer(tiles[playerSecondary])
     --draw enemies
-    drawFoes(enemies)
+    drawFoes(enemies, tiles)
     --draw time
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(1 / deltat, 0, 0)

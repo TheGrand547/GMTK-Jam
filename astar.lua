@@ -8,33 +8,74 @@ function astar(start, walls, target, tiles)
   local history = {} --
   
   local gScore = {}
-  local fScores = {}
-  testScores[start] = 0
+  local fScore = {}
+  gScore[start] = 0
+  fScore[start] = heuristic(start, target)
   while #untested > 0 do
-    local current = 
+    --fine current min, and remove from the untested list
+    local current = findMin(untested, fScore)
     if current == target then
       return makePath(current, history)
     end
-    
+    for i, tile in ipairs(adjacent(current)) do
+      local tempScore = gScore[current] + 1
+      if gScore[tile] == nil or tempScore < gScore[tile] then
+        history[tile] = current
+        gScore[tile] = tempScore
+        fScore[tile] = gScore[tile] + heuristic(tile, target)
+        if isInTable(untested, tile) ~= true then
+          table.insert(untested, tile)
+        end
+      end
+    end
   end
   return nil
 end
 
 function makePath(start, map)
-  if map[start] != nil
+  if map[map[start]] ~= nil then
     return makePath(map[start], map)
   end
-  return nil
+  return start
 end
 
 function adjacent(tile)
   local list = {}
   if (tile % WIDTH) ~= 1 then
-    print("well gamers")
+    table.insert(list, tile + 1)
+  end
+  if (tile % WIDTH) ~= 0 then
+    table.insert(list, tile - 1)
+  end
+  if tile > WIDTH then
+    table.insert(list, tile - WIDTH)
+  end
+  if tile <= HEIGHT * (WIDTH - 1) then
+    table.insert(list, tile + WIDTH)
   end
   return list
 end
 
-function heuristic(tile)
-  return nil
+function heuristic(tile, target)
+  return math.abs((tile % WIDTH) - (target % WIDTH)) + math.abs(math.floor(target / WIDTH) - math.floor(tile / WIDTH))
+end
+
+function findMin(list, scores)
+  local max = nil
+  local index = nil
+  for i, element in ipairs(list) do
+    if max == nil or scores[element] < scores[max] then
+      max = element
+      index = i
+    end
+  end
+  if index ~= nil then table.remove(list, index) end
+  return max
+end
+
+function isInTable(table, value)
+  for i, e in ipairs(table) do
+    if e == value then return true end
+  end
+  return false
 end
