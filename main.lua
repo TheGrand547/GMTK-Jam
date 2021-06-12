@@ -46,7 +46,7 @@ function love.keypressed(key, scancode, isrepeat)
     local x1, y1 = centerFromBlock(playerSecondary)
     local x2, y2 = centerFromBlock(playerPrimary)
     local angle = math.atan2(y2 - y1, x2 - x1)
-    local x, y = x1, x2
+    local x, y = x1, y1
     while temp ~= playerPrimary and temp ~= nil do
       blocks[temp].clicked = true
       x = x + 10 * math.cos(angle)
@@ -105,12 +105,14 @@ function blockFromPoint(x, y)
   return nil
 end
 
+--there is a bug here and i can't for the life of me find it, it's exceptionally painful as this messes up my line calculations >:(
+--if you fix one thing fix this, so that the proper lines(and thus the eventual checks) can be made without me spending years finding this error
 function centerFromBlock(index)
   local x = 0
   local y = 0
   if blocks[index] ~= nil then
     x = (blocks[index].x % WIDTH)  * TILE_SCALE + TILE_SCALE / 2
-    y = (blocks[index].y % HEIGHT) * TILE_SCALE + TILE_SCALE / 2
+    y = (blocks[index].y % WIDTH) * TILE_SCALE + TILE_SCALE / 2
   end
   return x, y
 end
