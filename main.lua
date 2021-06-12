@@ -47,11 +47,16 @@ function love.keypressed(key, scancode, isrepeat)
     local x2, y2 = centerFromBlock(playerPrimary)
     local angle = math.atan2(y2 - y1, x2 - x1)
     local x, y = x1, y1
+    local offset = 1
     while temp ~= playerPrimary and temp ~= nil do
-      blocks[temp].clicked = 5
+      blocks[temp].clicked = offset
       x = x + 5 * math.cos(angle)
       y = y + 5 * math.sin(angle)
-      temp = blockFromPoint(x, y)
+      local scratch = blockFromPoint(x, y)
+      if scratch ~= temp then
+        offset = offset + 1
+        temp = scratch
+      end
     end
   end
 end
