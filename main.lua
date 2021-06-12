@@ -17,48 +17,56 @@ function love.load()
   end
   love.window.requestAttention()
   love.graphics.setBackgroundColor(1, 1, 1)
-  player = 1
+  playerPrimary = 1
+  playerSecondary = 2
 end
 
 -- Called continuously
 function love.update(dt)
   deltat = dt
-  if love.keyboard.isDown("d") and (player % WIDTH) ~= 0 then
-    player = player + 1
+  if love.keyboard.isDown("d") and (playerPrimary % WIDTH) ~= 0 then
+    playerPrimary = playerPrimary + 1
   end
-  if love.keyboard.isDown("a") and (player % WIDTH) ~= 1 then
-    player = player - 1
+  if love.keyboard.isDown("a") and (playerPrimary % WIDTH) ~= 1 then
+    playerPrimary = playerPrimary - 1
   end
-  if love.keyboard.isDown("w") and player > HEIGHT then
-    player = player - WIDTH
+  if love.keyboard.isDown("w") and playerPrimary > HEIGHT then
+    playerPrimary = playerPrimary - WIDTH
   end
-  if love.keyboard.isDown("s") and player < HEIGHT * (WIDTH - 1) then
-    player = player + WIDTH
+  if love.keyboard.isDown("s") and playerPrimary < HEIGHT * (WIDTH - 1) then
+    playerPrimary = playerPrimary + WIDTH
   end
 end
 
+function love.keypressed(key, scancode, isrepeat)
+  if key == "space" and isrepeat == false then
+    local temp = playerPrimary
+    playerPrimary = playerSecondary
+    playerSecondary = temp
+  end
+end
+
+
 -- Called continuously
 function love.draw()
-    love.graphics.setColor(0, 0, 0)
     for i,elem in ipairs(blocks) do
+      love.graphics.setColor(0, 0, 0)
       -- sloppy
-      if i == player then
+      if i == playerPrimary then
         love.graphics.setColor(1, 0, 0)
-      end
-      if elem.clicked then
+      elseif i == playerSecondary then
+        love.graphics.setColor(0, 0, 1)
+      elseif elem.clicked then
         love.graphics.setColor(0, 1, 0)
       end
 
       love.graphics.rectangle("fill", elem.x * TILE_SCALE, elem.y * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
-
-      if i == player then
-        love.graphics.setColor(0, 0, 0)
-      end
+      
       if elem.clicked then
-        love.graphics.setColor(0, 0, 0)
         elem.clicked = false
       end
     end
+    love.graphics.setColor(0, 0, 0)
     love.graphics.print(1 / deltat, 0, 0)
 end
 
