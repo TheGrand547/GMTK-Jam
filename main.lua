@@ -1,12 +1,12 @@
 -- constants
-local width = 10
-local height = 10
+local WIDTH = 10
+local HEIGHT = 10
 
 -- Called once
 function love.load()
   blocks = {}
-  for y=1,height,1 do
-    for x=1,width,1 do
+  for y=1,HEIGHT,1 do
+    for x=1,WIDTH,1 do
       table.insert(blocks, {x, y})
     end
   end
@@ -18,17 +18,17 @@ end
 -- Called continuously
 function love.update(dt)
   deltat = dt
-  if love.keyboard.isDown("d") then
+  if love.keyboard.isDown("d") and (player % WIDTH) ~= 0 then
     player = player + 1
   end
-  if love.keyboard.isDown("a") then
+  if love.keyboard.isDown("a") and (player % WIDTH) ~= 1 then
     player = player - 1
   end
-  if love.keyboard.isDown("w") then
-    player = player - width
+  if love.keyboard.isDown("w") and player > HEIGHT then
+    player = player - WIDTH
   end
-  if love.keyboard.isDown("s") then
-    player = player + height
+  if love.keyboard.isDown("s") and player < HEIGHT * (WIDTH - 1) then
+    player = player + WIDTH
   end
 end
 
