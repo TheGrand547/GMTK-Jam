@@ -1,5 +1,6 @@
 --it is a* time fellas
 require("constants")
+require("util")
 
 --returns the the location of the next place to go
 --based on the wikipedia pseudocode implementation
@@ -57,7 +58,10 @@ function adjacent(tile)
 end
 
 function heuristic(tile, target)
-  return math.abs((tile % WIDTH) - (target % WIDTH)) + math.abs(math.floor(target / WIDTH) - math.floor(tile / WIDTH))
+  local xdif = math.abs((tile % WIDTH) - (target % WIDTH))
+  local ydif = math.abs(math.floor(target / WIDTH) - math.floor(tile / WIDTH))
+  if xdif > ydif then return xdif end
+  return ydif
 end
 
 function findMin(list, scores)
@@ -71,11 +75,4 @@ function findMin(list, scores)
   end
   if index ~= nil then table.remove(list, index) end
   return max
-end
-
-function isInTable(table, value)
-  for i, e in ipairs(table) do
-    if e == value then return true end
-  end
-  return false
 end

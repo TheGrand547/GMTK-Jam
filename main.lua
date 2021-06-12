@@ -3,13 +3,14 @@ io.stdout:setvbuf("no")
 require("player")
 require("foes")
 require("constants")
+require("util")
 
 -- Called once
 function love.load()
   tiles = {}
   enemies = {}
-  walls = {3} -- wall element is just {tile}
-  table.insert(enemies, {{0, 0, 1}, 6, 6})
+  walls = {3, 13, 23} -- wall element is just {tile}
+  table.insert(enemies, {{0, 0, 1}, 20})
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
       table.insert(tiles, {x = x1, y = y1, clicked = 0})
@@ -57,21 +58,24 @@ function love.keypressed(key, scancode, isrepeat)
         end
       end
     end
+    local old = playerPrimary
     if key == "d" and (playerPrimary % WIDTH) ~= 0 then
       playerPrimary = playerPrimary + 1
-      playerTurn = false
     end
     if key == "a" and (playerPrimary % WIDTH) ~= 1 then
       playerPrimary = playerPrimary - 1
-      playerTurn = false
     end
     if key == "w" and playerPrimary > WIDTH then
       playerPrimary = playerPrimary - WIDTH
-      playerTurn = false
     end
     if key == "s" and playerPrimary <= HEIGHT * (WIDTH - 1) then
       playerPrimary = playerPrimary + WIDTH
-      playerTurn = false
+    end
+    if isInTable(walls, playerPrimary) or playerPrimary == playerSecondary then  
+      playerPrimary = old 
+    end
+    if old ~= playerPrimary then 
+      playerTurn = false 
     end
   end
 end
@@ -96,7 +100,9 @@ function love.draw()
     drawSecondPlayer(tiles[playerSecondary])
     --draw enemies
     drawFoes(enemies, tiles)
-    --draw time
+    --draw walls
+    drawWalls(walls, tiles)
+    --draw fps
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(1 / deltat, 0, 0)
 end
