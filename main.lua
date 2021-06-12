@@ -5,8 +5,8 @@ local height = 10
 -- Called once
 function love.load()
   blocks = {}
-  for y=1,width,1 do
-    for x=1,height,1 do
+  for y=1,height,1 do
+    for x=1,width,1 do
       table.insert(blocks, {x, y})
     end
   end
