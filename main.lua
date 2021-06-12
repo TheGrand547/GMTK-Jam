@@ -1,7 +1,7 @@
 -- print immediately
 io.stdout:setvbuf("no")
 require("player")
-require("foes")
+require("nonplayer")
 require("constants")
 require("util")
 
@@ -9,7 +9,7 @@ require("util")
 function love.load()
   tiles = {}
   enemies = {}
-  walls = {3, 13, 23} -- wall element is just {tile}
+  walls = {3, 13, 23, 24, 25, 99, 55, 56, 65, 54, 45} -- wall element is just {tile}
   table.insert(enemies, {{0, 0, 1}, 20})
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
@@ -82,18 +82,7 @@ end
 
 -- Called continuously
 function love.draw()
-  love.graphics.setColor(.5, .5, .5)
-    for i, elem in ipairs(tiles) do
-      love.graphics.rectangle("fill", elem.x * TILE_SCALE, elem.y * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
-      if elem.clicked > 0 then
-        love.graphics.setColor(1, 1, 0)
-        elem.clicked = elem.clicked - 1
-        --outline all affected tiles
-        love.graphics.rectangle("line", elem.x * TILE_SCALE - 1, elem.y * TILE_SCALE - 1, SQUARE_SIDE_LENGTH + 1, SQUARE_SIDE_LENGTH + 1)
-        love.graphics.setColor(.5, .5, .5)
-      end
-    end
-    
+    drawTiles(tiles)
     --draw primary player
     drawPrimaryPlayer(tiles[playerPrimary])
     --draw secondary player
@@ -104,7 +93,7 @@ function love.draw()
     drawWalls(walls, tiles)
     --draw fps
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print(1 / deltat, 0, 0)
+    love.graphics.print(math.floor(1 / deltat), 0, 0)
 end
 
 function love.mousepressed(x, y, k)
