@@ -10,7 +10,8 @@ function love.load()
   tiles = {}
   enemies = {}
   walls = {3, 13, 23, 24, 25, 99, 55, 56, 65, 54, 45} -- wall element is just {tile}
-  table.insert(enemies, {{0, 0, 1}, 20})
+  table.insert(enemies, {{0, 0, 1}, 20, BASIC})
+  table.insert(enemies, {{0, 0, 1}, 40, BASIC})
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
       table.insert(tiles, {x = x1, y = y1, clicked = 0})

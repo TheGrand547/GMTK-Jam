@@ -1,17 +1,28 @@
 --all enemy stuff
---foe layout, {{color triplet}, tileLocation}
+--foe layout, {{color triplet}, tileLocation, type}
 require("constants")
 require("astar")
 
+types = {BASIC = 1, }
+
 function doFoeStuff(foes, p1, p2, tiles, walls)
   for i, foe in ipairs(foes) do
-    if tiles[foe[2]].clicked > 0 then 
-      table.remove(foes, i) 
+    if foe[3] == BASIC then
+      basicFoe(foe, foes, i, p1, p2, tiles, walls)
     end
-    local new = astar(foe[2], walls, p1, tiles)
-    if new ~= null then foe[2] = new end
   end
 end
+
+function basicFoe(foe, foes, i, p1, p2, tiles, walls)
+  if tiles[foe[2]].clicked > 0 then
+    table.remove(foes, i) 
+  end
+  local new = astar(foe[2], walls, p1, tiles)
+  if new ~= null then 
+    foe[2] = new 
+  end
+end
+
 
 function drawFoes(foes, tiles)
   for i, foe in ipairs(foes) do
@@ -21,7 +32,7 @@ function drawFoes(foes, tiles)
 end
 
 function setFoeColor(foe)
-    love.graphics.setColor(foe[1][1], foe[1][2], foe[1][3])
+  love.graphics.setColor(foe[1][1], foe[1][2], foe[1][3])
 end
 
 --oh and walls for giggles
