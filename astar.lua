@@ -23,7 +23,7 @@ function astar(start, walls, target, tiles)
         history[tile] = current
         gScore[tile] = tempScore
         fScore[tile] = gScore[tile] + heuristic(tile, target)
-        if isInTable(untested, tile) ~= true then
+        if not isInTable(untested, tile) and not isInTable(walls, tile) then
           table.insert(untested, tile)
         end
       end
@@ -42,10 +42,10 @@ end
 function adjacent(tile)
   local list = {}
   if (tile % WIDTH) ~= 1 then
-    table.insert(list, tile + 1)
+    table.insert(list, tile - 1)
   end
   if (tile % WIDTH) ~= 0 then
-    table.insert(list, tile - 1)
+    table.insert(list, tile + 1)
   end
   if tile > WIDTH then
     table.insert(list, tile - WIDTH)

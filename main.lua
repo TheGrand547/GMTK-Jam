@@ -8,7 +8,7 @@ require("constants")
 function love.load()
   tiles = {}
   enemies = {}
-  walls = {} -- wall element is just {tile}
+  walls = {3} -- wall element is just {tile}
   table.insert(enemies, {{0, 0, 1}, 6, 6})
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
