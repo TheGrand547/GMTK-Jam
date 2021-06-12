@@ -3,9 +3,11 @@ io.stdout:setvbuf("no")
 
 -- constants
 local WIDTH = 10
-local HEIGHT = 10
-local SQUARE_SIDE_LENGTH = 51
+local HEIGHT = 10 local SQUARE_SIDE_LENGTH = 51
 local TILE_SCALE = SQUARE_SIDE_LENGTH + 1
+
+local turns = {}
+local types = { PLAYER = 1, ENEMY = 2} -- Add more as time goes on
 
 -- Called once
 function love.load()
@@ -17,27 +19,38 @@ function love.load()
   end
   love.window.requestAttention()
   love.graphics.setBackgroundColor(1, 1, 1)
-  playerPrimary = 1
-  playerSecondary = 2
+  playerPrimary = {pos = 1, type = types.PLAYER}
+  playerSecondary = {pos = 2, type = types.PLAYER}
+  dummyEnemy = {pos = 15, type = types.ENEMY}
+  table.insert(turns, dummyEnemy)
+  table.insert(turns, playerPrimary) -- Player goes first I guess?
 end
 
 -- Called continuously
 function love.update(dt)
   deltat = dt
-  
+  resolveTurn()
+end
+
+function resolveTurn() 
+	local currentTurnObject = table.remove(turns)
+	print(currentTurnObject.type)
+	if (currentTurnObject.type == types.PLAYER) then
+	end
+	table.insert(turns, currentTurnObject)
 end
 
 function love.keypressed(key, scancode, isrepeat)
   if key == "space" and isrepeat == false then
-    local temp = playerPrimary
-    playerPrimary = playerSecondary
-    playerSecondary = temp
-    local x1, y1 = centerFromBlock(playerSecondary)
-    local x2, y2 = centerFromBlock(playerPrimary)
+    local temp = playerPrimary.pos
+    playerPrimary.pos = playerSecondary.pos
+    playerSecondary.pos = temp
+    local x1, y1 = centerFromBlock(playerSecondary.pos)
+    local x2, y2 = centerFromBlock(playerPrimary.pos)
     local angle = math.atan2(y2 - y1, x2 - x1)
     local x, y = x1, y1
     local offset = 1
-    while temp ~= playerPrimary and temp ~= nil do
+    while temp ~= playerPrimary.pos and temp ~= nil do
       blocks[temp].clicked = offset
       x = x + 5 * math.cos(angle)
       y = y + 5 * math.sin(angle)
@@ -48,17 +61,17 @@ function love.keypressed(key, scancode, isrepeat)
       end
     end
   end
-  if key == "d" and (playerPrimary % WIDTH) ~= 0 then
-    playerPrimary = playerPrimary + 1
+  if key == "d" and (playerPrimary.pos % WIDTH) ~= 0 then
+    playerPrimary.pos = playerPrimary.pos + 1
   end
-  if key == "a" and (playerPrimary % WIDTH) ~= 1 then
-    playerPrimary = playerPrimary - 1
+  if key == "a" and (playerPrimary.pos % WIDTH) ~= 1 then
+    playerPrimary.pos = playerPrimary.pos - 1
   end
-  if key == "w" and playerPrimary > HEIGHT then
-    playerPrimary = playerPrimary - WIDTH
+  if key == "w" and playerPrimary.pos > HEIGHT then
+    playerPrimary.pos = playerPrimary.pos - WIDTH
   end
-  if key == "s" and playerPrimary <= HEIGHT * (WIDTH - 1) then
-    playerPrimary = playerPrimary + WIDTH
+  if key == "s" and playerPrimary.pos <= HEIGHT * (WIDTH - 1) then
+    playerPrimary.pos = playerPrimary.pos + WIDTH
   end
 end
 
@@ -68,9 +81,9 @@ function love.draw()
     for i, elem in ipairs(blocks) do
       love.graphics.setColor(0, 0, 0)
       -- sloppy
-      if i == playerPrimary then
+      if i == playerPrimary.pos then
         love.graphics.setColor(1, 0, 0)
-      elseif i == playerSecondary then
+      elseif i == playerSecondary.pos then
         love.graphics.setColor(0, 0, 1)
       elseif elem.clicked > 0 then
         love.graphics.setColor(0, 1, 0)
