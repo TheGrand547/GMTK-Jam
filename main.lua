@@ -24,18 +24,7 @@ end
 -- Called continuously
 function love.update(dt)
   deltat = dt
-  if love.keyboard.isDown("d") and (playerPrimary % WIDTH) ~= 0 then
-    playerPrimary = playerPrimary + 1
-  end
-  if love.keyboard.isDown("a") and (playerPrimary % WIDTH) ~= 1 then
-    playerPrimary = playerPrimary - 1
-  end
-  if love.keyboard.isDown("w") and playerPrimary > HEIGHT then
-    playerPrimary = playerPrimary - WIDTH
-  end
-  if love.keyboard.isDown("s") and playerPrimary <= HEIGHT * (WIDTH - 1) then
-    playerPrimary = playerPrimary + WIDTH
-  end
+  
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -58,6 +47,18 @@ function love.keypressed(key, scancode, isrepeat)
         temp = scratch
       end
     end
+  end
+  if key == "d" and (playerPrimary % WIDTH) ~= 0 then
+    playerPrimary = playerPrimary + 1
+  end
+  if key == "a" and (playerPrimary % WIDTH) ~= 1 then
+    playerPrimary = playerPrimary - 1
+  end
+  if key == "w" and playerPrimary > HEIGHT then
+    playerPrimary = playerPrimary - WIDTH
+  end
+  if key == "s" and playerPrimary <= HEIGHT * (WIDTH - 1) then
+    playerPrimary = playerPrimary + WIDTH
   end
 end
 
