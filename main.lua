@@ -4,8 +4,8 @@ io.stdout:setvbuf("no")
 -- constants
 local WIDTH = 10
 local HEIGHT = 10
-local SQUARE_SIDE_LENGTH = 50
-local TILE_SCALE = 51
+local SQUARE_SIDE_LENGTH = 51
+local TILE_SCALE = SQUARE_SIDE_LENGTH + 1
 
 -- Called once
 function love.load()
@@ -43,13 +43,27 @@ function love.keypressed(key, scancode, isrepeat)
     local temp = playerPrimary
     playerPrimary = playerSecondary
     playerSecondary = temp
+    local x1, y1 = centerFromBlock(playerSecondary)
+    local x2, y2 = centerFromBlock(playerPrimary)
+    local angle = math.atan2(y2 - y1, x2 - x1)
+    local x, y = x1, x2
+    while temp ~= playerPrimary and temp ~= nil do
+      blocks[temp].clicked = true
+      x = x + 10 * math.cos(angle)
+      y = y + 10 * math.sin(angle)
+      print(x, y)
+      local scratch = blockFromPoint(x, y)
+      if scratch ~= temp then
+        temp = scratch
+      end
+    end
   end
 end
 
 
 -- Called continuously
 function love.draw()
-    for i,elem in ipairs(blocks) do
+    for i, elem in ipairs(blocks) do
       love.graphics.setColor(0, 0, 0)
       -- sloppy
       if i == playerPrimary then
@@ -89,4 +103,14 @@ function blockFromPoint(x, y)
       return index
   end
   return nil
+end
+
+function centerFromBlock(index)
+  local x = 0
+  local y = 0
+  if blocks[index] ~= nil then
+    x = (blocks[index].x % WIDTH)  * TILE_SCALE + TILE_SCALE / 2
+    y = (blocks[index].y % HEIGHT) * TILE_SCALE + TILE_SCALE / 2
+  end
+  return x, y
 end
