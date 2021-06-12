@@ -12,7 +12,7 @@ function love.load()
   blocks = {}
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
-      table.insert(blocks, {x = x1, y = y1, clicked = false})
+      table.insert(blocks, {x = x1, y = y1, clicked = 0})
     end
   end
   love.window.requestAttention()
@@ -33,7 +33,7 @@ function love.update(dt)
   if love.keyboard.isDown("w") and playerPrimary > HEIGHT then
     playerPrimary = playerPrimary - WIDTH
   end
-  if love.keyboard.isDown("s") and playerPrimary < HEIGHT * (WIDTH - 1) then
+  if love.keyboard.isDown("s") and playerPrimary <= HEIGHT * (WIDTH - 1) then
     playerPrimary = playerPrimary + WIDTH
   end
 end
@@ -48,14 +48,10 @@ function love.keypressed(key, scancode, isrepeat)
     local angle = math.atan2(y2 - y1, x2 - x1)
     local x, y = x1, y1
     while temp ~= playerPrimary and temp ~= nil do
-      blocks[temp].clicked = true
+      blocks[temp].clicked = 5
       x = x + 10 * math.cos(angle)
       y = y + 10 * math.sin(angle)
-      print(x, y)
-      local scratch = blockFromPoint(x, y)
-      if scratch ~= temp then
-        temp = scratch
-      end
+      temp = blockFromPoint(x, y)
     end
   end
 end
@@ -70,14 +66,14 @@ function love.draw()
         love.graphics.setColor(1, 0, 0)
       elseif i == playerSecondary then
         love.graphics.setColor(0, 0, 1)
-      elseif elem.clicked then
+      elseif elem.clicked > 0 then
         love.graphics.setColor(0, 1, 0)
       end
 
       love.graphics.rectangle("fill", elem.x * TILE_SCALE, elem.y * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
       
-      if elem.clicked then
-        elem.clicked = false
+      if elem.clicked > 0 then
+        elem.clicked = elem.clicked - 1
       end
     end
     love.graphics.setColor(0, 0, 0)
@@ -92,7 +88,7 @@ function colorGridOnClick(x, y)
     local index = blockFromPoint(x, y)
     if index ~= nil then
       print("Clicked, x: " .. x .. "\t y: " .. y)
-      blocks[index].clicked = true
+      blocks[index].clicked = 10
     end
 end
 
@@ -111,8 +107,8 @@ function centerFromBlock(index)
   local x = 0
   local y = 0
   if blocks[index] ~= nil then
-    x = (blocks[index].x % WIDTH)  * TILE_SCALE + TILE_SCALE / 2
-    y = (blocks[index].y % WIDTH) * TILE_SCALE + TILE_SCALE / 2
+    x = blocks[index].x  * TILE_SCALE + TILE_SCALE / 2
+    y = blocks[index].y * TILE_SCALE + TILE_SCALE / 2
   end
   return x, y
 end
