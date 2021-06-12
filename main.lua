@@ -7,7 +7,7 @@ function love.load()
   blocks = {}
   for y=1,width,1 do
     for x=1,height,1 do
-      table.insert(blocks, {x * 51, y * 51})
+      table.insert(blocks, {x, y})
     end
   end
   love.window.requestAttention()
@@ -40,7 +40,7 @@ function love.draw()
       if i == player then
         love.graphics.setColor(1, 0, 0)
       end
-      love.graphics.rectangle("fill", elem[1], elem[2], 50, 50)
+      love.graphics.rectangle("fill", elem[1] * 51, elem[2] * 51, 50, 50)
       if i == player then
         love.graphics.setColor(0, 0, 0)
       end
