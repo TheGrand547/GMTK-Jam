@@ -10,6 +10,7 @@ local TILE_SCALE = SQUARE_SIDE_LENGTH + 1
 -- Called once
 function love.load()
   blocks = {}
+  enemies = {}
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
       table.insert(blocks, {x = x1, y = y1, clicked = 0})
@@ -19,12 +20,16 @@ function love.load()
   love.graphics.setBackgroundColor(1, 1, 1)
   playerPrimary = 1
   playerSecondary = 2
+  movementLock = false
 end
 
 -- Called continuously
 function love.update(dt)
   deltat = dt
-  
+  -- no enemies left -> free movement
+  if table.getn(enemies) == 0 then
+    movementLock = false
+  end
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -48,17 +53,23 @@ function love.keypressed(key, scancode, isrepeat)
       end
     end
   end
-  if key == "d" and (playerPrimary % WIDTH) ~= 0 then
-    playerPrimary = playerPrimary + 1
-  end
-  if key == "a" and (playerPrimary % WIDTH) ~= 1 then
-    playerPrimary = playerPrimary - 1
-  end
-  if key == "w" and playerPrimary > HEIGHT then
-    playerPrimary = playerPrimary - WIDTH
-  end
-  if key == "s" and playerPrimary <= HEIGHT * (WIDTH - 1) then
-    playerPrimary = playerPrimary + WIDTH
+  if movementLock == false then
+    if key == "d" and (playerPrimary % WIDTH) ~= 0 then
+      playerPrimary = playerPrimary + 1
+      movementLock = true
+    end
+    if key == "a" and (playerPrimary % WIDTH) ~= 1 then
+      playerPrimary = playerPrimary - 1
+      movementLock = true
+    end
+    if key == "w" and playerPrimary > HEIGHT then
+      playerPrimary = playerPrimary - WIDTH
+      movementLock = true
+    end
+    if key == "s" and playerPrimary <= HEIGHT * (WIDTH - 1) then
+      playerPrimary = playerPrimary + WIDTH
+      movementLock = true
+    end
   end
 end
 
