@@ -64,11 +64,10 @@ end
 
 function colorGridOnClick(x, y) 
     print("Clicked, x: " .. x .. "\t y: " .. y)
-    for i,elem in ipairs(blocks) do -- I don't know if I like O(n) per click but since n is ~10 it's ok I guess
-        local squareX = elem.x * 51
-        local squareY = elem.y * 51
-        if x > squareX and x < squareX + SQUARE_SIDE_LENGTH and y > squareY and y < squareY + SQUARE_SIDE_LENGTH then -- Checks if the mouse is on the grid
-            elem.clicked = true
-        end
+    print(math.floor(y / 51) * WIDTH + math.floor(x / 51))
+    if blocks[math.floor(y / 51 - 1) * WIDTH + math.floor(x / 51)] ~= nil then
+      blocks[math.floor(y / 51 - 1) * WIDTH + math.floor(x / 51)].clicked = true
     end
+      
+   
 end
