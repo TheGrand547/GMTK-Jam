@@ -1,26 +1,24 @@
 -- print immediately
 io.stdout:setvbuf("no")
-
--- constants
-local WIDTH = 10
-local HEIGHT = 10
-local SQUARE_SIDE_LENGTH = 51
-local TILE_SCALE = SQUARE_SIDE_LENGTH + 1
+require("player")
+require("foes")
+require("constants")
 
 -- Called once
 function love.load()
   blocks = {}
   enemies = {}
+  table.insert(enemies, {{0, 0, 1}, 6, 6})
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
       table.insert(blocks, {x = x1, y = y1, clicked = 0})
     end
   end
   love.window.requestAttention()
-  love.graphics.setBackgroundColor(1, 1, 1)
+  love.graphics.setBackgroundColor(0, 0, 0)
   playerPrimary = 1
   playerSecondary = 2
-  movementLock = false
+  playerTurn = true
 end
 
 -- Called continuously
@@ -28,72 +26,75 @@ function love.update(dt)
   deltat = dt
   -- no enemies left -> free movement
   if table.getn(enemies) == 0 then
-    movementLock = false
+    playerTurn = true
+  elseif playerTurn == false then
+    doFoeStuff(enemies)
+    playerTurn = true
   end
 end
 
 function love.keypressed(key, scancode, isrepeat)
-  if key == "space" and isrepeat == false then
-    local temp = playerPrimary
-    playerPrimary = playerSecondary
-    playerSecondary = temp
-    local x1, y1 = centerFromBlock(playerSecondary)
-    local x2, y2 = centerFromBlock(playerPrimary)
-    local angle = math.atan2(y2 - y1, x2 - x1)
-    local x, y = x1, y1
-    local offset = 1
-    while temp ~= playerPrimary and temp ~= nil do
-      blocks[temp].clicked = offset
-      x = x + 5 * math.cos(angle)
-      y = y + 5 * math.sin(angle)
-      local scratch = blockFromPoint(x, y)
-      if scratch ~= temp then
-        offset = offset + 1
-        temp = scratch
+  if playerTurn == true and isrepeat == false then
+    if key == "space" then
+      local temp = playerPrimary
+      playerPrimary = playerSecondary
+      playerSecondary = temp
+      local x1, y1 = centerFromBlock(playerSecondary)
+      local x2, y2 = centerFromBlock(playerPrimary)
+      local angle = math.atan2(y2 - y1, x2 - x1)
+      local x, y = x1, y1
+      local offset = 1
+      while temp ~= playerPrimary and temp ~= nil do
+        blocks[temp].clicked = 1.5 * offset
+        x = x + 5 * math.cos(angle)
+        y = y + 5 * math.sin(angle)
+        local scratch = blockFromPoint(x, y)
+        if scratch ~= temp then
+          offset = offset + 1
+          temp = scratch
+        end
       end
     end
-  end
-  if movementLock == false then
     if key == "d" and (playerPrimary % WIDTH) ~= 0 then
       playerPrimary = playerPrimary + 1
-      movementLock = true
+      playerTurn = true
     end
     if key == "a" and (playerPrimary % WIDTH) ~= 1 then
       playerPrimary = playerPrimary - 1
-      movementLock = true
+      playerTurn = true
     end
     if key == "w" and playerPrimary > HEIGHT then
       playerPrimary = playerPrimary - WIDTH
-      movementLock = true
+      playerTurn = true
     end
     if key == "s" and playerPrimary <= HEIGHT * (WIDTH - 1) then
       playerPrimary = playerPrimary + WIDTH
-      movementLock = true
+      playerTurn = true
     end
   end
 end
 
-
 -- Called continuously
 function love.draw()
+  love.graphics.setColor(1, 1, 1)
     for i, elem in ipairs(blocks) do
-      love.graphics.setColor(0, 0, 0)
-      -- sloppy
-      if i == playerPrimary then
-        love.graphics.setColor(1, 0, 0)
-      elseif i == playerSecondary then
-        love.graphics.setColor(0, 0, 1)
-      elseif elem.clicked > 0 then
-        love.graphics.setColor(0, 1, 0)
-      end
-
       love.graphics.rectangle("fill", elem.x * TILE_SCALE, elem.y * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
-      
       if elem.clicked > 0 then
+        love.graphics.setColor(1, 0, 0)
         elem.clicked = elem.clicked - 1
+        love.graphics.rectangle("line", elem.x * TILE_SCALE - 1, elem.y * TILE_SCALE - 1, SQUARE_SIDE_LENGTH + 1, SQUARE_SIDE_LENGTH + 1)
+        love.graphics.setColor(1, 1, 1)
       end
     end
-    love.graphics.setColor(0, 0, 0)
+    
+    --draw primary player
+    drawPrimaryPlayer(blocks[playerPrimary])
+    --draw secondary player
+    drawSecondPlayer(blocks[playerSecondary])
+    --draw enemies
+    drawFoes(enemies)
+    --draw time
+    love.graphics.setColor(1, 1, 1)
     love.graphics.print(1 / deltat, 0, 0)
 end
 
