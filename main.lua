@@ -6,13 +6,15 @@ require("constants")
 require("util")
 require("files")
 
+function loadCurrentLevel()
+  playerPrimary, playerSecondary, primaryEnd, secondaryEnd, enemies, walls = loadLevel("levels.txt", currentLevel)
+  playerTurn = true
+end
+
 -- Called once
 function love.load()
   tiles = {}
   enemies = {}
-  walls = {3, 13, 23, 24, 25, 99, 55, 56, 65, 54, 45} -- wall element is just {tile}
-  table.insert(enemies, makeFoe(20, types.BASIC))
-  table.insert(enemies, makeFoe(40, types.ALT_BASIC))
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
       table.insert(tiles, {x = x1, y = y1, clicked = 0})
@@ -20,21 +22,17 @@ function love.load()
   end
   love.window.requestAttention()
   love.graphics.setBackgroundColor(0, 0, 0)
-  playerPrimary = 1
-  playerSecondary = 2
-  playerTurn = true
-  --end conditions
-  primaryEnd = 100
-  secondaryEnd = 10
-  playerPrimary, playerSecondary, primaryEnd, secondaryEnd, enemies, walls = loadLevel("levels.txt", 0)
+  currentLevel = 0
+  loadCurrentLevel()
 end
 
 -- Called continuously
 function love.update(dt)
   deltat = dt
   if playerPrimary == primaryEnd and playerSecondary == secondaryEnd then
-    print("YOU WON GAMER")
     --load next level
+    currentLevel = currentLevel + 1
+    loadCurrentLevel()
   end
   -- no enemies left -> free movement
   if table.getn(enemies) == 0 then
