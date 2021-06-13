@@ -7,8 +7,13 @@ require("util")
 require("files")
 
 function loadCurrentLevel()
-  playerPrimary, playerSecondary, primaryEnd, secondaryEnd, enemies, walls = loadLevel("levels.txt", currentLevel)
-  playerTurn = true
+  if currentLevel >= largest then
+    gameOver = true
+    playerTurn = false
+  else
+    playerPrimary, playerSecondary, primaryEnd, secondaryEnd, enemies, walls, largest = loadLevel("levels.txt", currentLevel)
+    playerTurn = true
+  end
 end
 
 -- Called once
@@ -23,13 +28,17 @@ function love.load()
   love.window.requestAttention()
   love.graphics.setBackgroundColor(0, 0, 0)
   currentLevel = 0
+  largest = 1000
+  gameOver = false
   loadCurrentLevel()
+  normalFont = love.graphics.newFont(12)
+  bigFont = love.graphics.newFont(50)
 end
 
 -- Called continuously
 function love.update(dt)
   deltat = dt
-  if playerPrimary == primaryEnd and playerSecondary == secondaryEnd then
+  if playerPrimary == primaryEnd and playerSecondary == secondaryEnd and not gameOver then
     --load next level
     currentLevel = currentLevel + 1
     loadCurrentLevel()
@@ -37,10 +46,13 @@ function love.update(dt)
   -- no enemies left -> free movement
   if table.getn(enemies) == 0 then
     playerTurn = true
-  elseif not playerTurn then
+  elseif not playerTurn and not gameOver then
     doFoeStuff(enemies, playerPrimary, playerSecondary, tiles, walls)
     for i, foe in ipairs(enemies) do
       foe.flag = false
+      if foe.tileLocation == playerPrimary or foe.tileLocation == playerSecondary then
+        loadCurrentLevel()
+      end
     end
     playerTurn = true
   end
@@ -93,41 +105,46 @@ end
 
 -- Called continuously
 function love.draw()
-    drawTiles(tiles)
-    --draw primary player
-    drawPrimaryPlayer(tiles[playerPrimary])
-    --draw secondary player
-    drawSecondPlayer(tiles[playerSecondary])
-    --draw enemies
-    drawFoes(enemies, tiles)
-    --draw walls
-    drawWalls(walls, tiles)
-    --draw end conditions
-    drawEnd(primaryEnd, secondaryEnd, tiles)
-    --draw fps
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.print(math.floor(1 / deltat), 0, 0)
-    love.graphics.print("Get the green and blue squres to the outlines of the same color, avoid the other squares.", 20, 0)
-    love.graphics.print("WASD movement, space to switch", 20, 20)
+  drawTiles(tiles)
+  --draw primary player
+  drawPrimaryPlayer(tiles[playerPrimary])
+  --draw secondary player
+  drawSecondPlayer(tiles[playerSecondary])
+  --draw enemies
+  drawFoes(enemies, tiles)
+  --draw walls
+  drawWalls(walls, tiles)
+  --draw end conditions
+  drawEnd(primaryEnd, secondaryEnd, tiles)
+  --draw fps
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.setFont(normalFont)
+  love.graphics.print(math.floor(1 / deltat), 0, 0)
+  love.graphics.print("Get the green and blue squres to the outlines of the same color, avoid the other squares.", 20, 0)
+  love.graphics.print("WASD movement, space to switch", 20, 20)
+  if gameOver then
+    love.graphics.setFont(bigFont)
+    love.graphics.print("You have completed the game,\n good job as I didn't really\n test this far", 0, 100)
+  end
 end
 
 function love.mousepressed(x, y, k)
-    colorGridOnClick(x, y)
+  colorGridOnClick(x, y)
 end
 
 function colorGridOnClick(x, y) 
-    local index = blockFromPoint(x, y)
-    if index ~= nil then
-      print("Clicked, x: " .. x .. "\t y: " .. y)
-      tiles[index].clicked = 10
-    end
+  local index = blockFromPoint(x, y)
+  if index ~= nil then
+    print("Clicked, x: " .. x .. "\t y: " .. y)
+    tiles[index].clicked = 10
+  end
 end
 
 --index in tiles corresponding to that point on the grid if it's a valid point, nil otherwise
 function blockFromPoint(x, y)
   local index = math.floor(y / TILE_SCALE - 1) * WIDTH + math.floor(x / TILE_SCALE)
   if x >= TILE_SCALE and x <= (WIDTH + 1) * TILE_SCALE and y >= TILE_SCALE and y <= (HEIGHT + 1) * TILE_SCALE and tiles[index] ~= nil then
-      return index
+    return index
   end
   return nil
 end

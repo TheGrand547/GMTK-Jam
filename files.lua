@@ -14,8 +14,8 @@ function loadLevel(name, level)
   local end2 = 0
   local foes = {} 
   local walls = {}
+  local current = 0
   if file ~= nil then
-    local current = 0
     for line in file:lines() do
       if current >= level * 3 and current < (level + 1) * 3 then
         local split = mysplit(line,",")
@@ -43,7 +43,7 @@ function loadLevel(name, level)
     end
     file:close()
   end
-  return player, player2, end1, end2, foes, walls
+  return player, player2, end1, end2, foes, walls, math.floor(current / 3)
 end
 
 --https://stackoverflow.com/a/7615129
