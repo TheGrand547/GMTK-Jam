@@ -121,10 +121,10 @@ function love.draw()
   love.graphics.setFont(normalFont)
   love.graphics.print(math.floor(1 / deltat), 0, 0)
   love.graphics.print("Get the green and blue squres to the outlines of the same color, avoid the other squares.", 20, 0)
-  love.graphics.print("WASD movement, space to switch", 20, 20)
+  love.graphics.print("WASD movement, space to switch, when switching you damage everything between you", 20, 20)
   if gameOver then
     love.graphics.setFont(bigFont)
-    love.graphics.print("You have completed the game,\n good job as I didn't really\n test this far", 0, 100)
+    love.graphics.print("You have completed the \ngame, good job as \nI didn't really\n test this far", 0, 100)
   end
 end
 

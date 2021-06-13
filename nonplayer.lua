@@ -30,8 +30,8 @@ function doFoeStuff(foes, p1, p2, tiles, walls)
 end
 
 function advancedFoe(foe, foes, i, p1, p2, tiles, walls)
-  local one = heuristic(foe.pos, p1)
-  local two = heuristic(foe.pos, p2)
+  local one = heuristic(foe.tileLocation, p1)
+  local two = heuristic(foe.tileLocation, p2)
   -- go to the closer of the two
   if one < two then
     basicFoe(foe, foes, i, p1, p2, tiles, walls)
