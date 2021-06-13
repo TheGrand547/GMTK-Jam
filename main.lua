@@ -4,6 +4,7 @@ require("player")
 require("nonplayer")
 require("constants")
 require("util")
+require("files")
 
 -- Called once
 function love.load()
@@ -25,6 +26,7 @@ function love.load()
   --end conditions
   primaryEnd = 100
   secondaryEnd = 10
+  playerPrimary, playerSecondary, primaryEnd, secondaryEnd, enemies, walls = loadLevel("levels.txt", 0)
 end
 
 -- Called continuously
