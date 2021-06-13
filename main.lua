@@ -22,11 +22,17 @@ function love.load()
   playerPrimary = 1
   playerSecondary = 2
   playerTurn = true
+  --end conditions
+  primaryEnd = 100
+  secondaryEnd = 10
 end
 
 -- Called continuously
 function love.update(dt)
   deltat = dt
+  if playerPrimary == primaryEnd and playerSecondary == secondaryEnd then
+    print("YOU WON GAMER")
+  end
   -- no enemies left -> free movement
   if table.getn(enemies) == 0 then
     playerTurn = true
@@ -95,6 +101,8 @@ function love.draw()
     drawFoes(enemies, tiles)
     --draw walls
     drawWalls(walls, tiles)
+    --draw end conditions
+    drawEnd(primaryEnd, secondaryEnd, tiles)
     --draw fps
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(math.floor(1 / deltat), 0, 0)

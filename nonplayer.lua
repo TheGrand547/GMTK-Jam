@@ -110,6 +110,13 @@ function drawTiles(tiles)
   end
 end
 
+function drawEnd(first, second, tiles)
+  love.graphics.setColor(0, 1, 0)
+  love.graphics.rectangle("line", tiles[first].x * TILE_SCALE - 1, tiles[first].y * TILE_SCALE - 1, SQUARE_SIDE_LENGTH + 1, SQUARE_SIDE_LENGTH + 1)
+  love.graphics.setColor(0, 0, 1)
+  love.graphics.rectangle("line", tiles[second].x * TILE_SCALE - 1, tiles[second].y * TILE_SCALE - 1, SQUARE_SIDE_LENGTH + 1, SQUARE_SIDE_LENGTH + 1)
+end
+
 function makeFoe(tile, kind)
   local new = {tileLocation = tile, type = kind, hp = 1, flag = false}
   if kind == types.ADVANCED then
