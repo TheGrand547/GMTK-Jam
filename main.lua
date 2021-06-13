@@ -32,6 +32,7 @@ function love.update(dt)
   deltat = dt
   if playerPrimary == primaryEnd and playerSecondary == secondaryEnd then
     print("YOU WON GAMER")
+    --load next level
   end
   -- no enemies left -> free movement
   if table.getn(enemies) == 0 then
@@ -106,6 +107,8 @@ function love.draw()
     --draw fps
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(math.floor(1 / deltat), 0, 0)
+    love.graphics.print("Get the green and blue squres to the outlines of the same color, avoid the other squares.", 20, 0)
+    love.graphics.print("WASD movement, space to switch", 20, 20)
 end
 
 function love.mousepressed(x, y, k)

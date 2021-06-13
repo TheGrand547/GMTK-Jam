@@ -4,7 +4,7 @@ require("constants")
 require("astar")
 
 types = {BASIC = 1, ALT_BASIC = 2, ADVANCED = 3, FAST = 4, ALT_FAST = 5, ADVANCED_FAST = 6}
--- TODO, different colors per type, end state of each one, then file -> maps, then UI polish stuff
+-- TODO, then file -> maps, then UI polish stuff
 function doFoeStuff(foes, p1, p2, tiles, walls)
   for i, foe in ipairs(foes) do
     --should be a cleaner way to do this but whatever
@@ -111,9 +111,9 @@ function drawTiles(tiles)
 end
 
 function drawEnd(first, second, tiles)
-  love.graphics.setColor(0, 1, 0)
-  love.graphics.rectangle("line", tiles[first].x * TILE_SCALE - 1, tiles[first].y * TILE_SCALE - 1, SQUARE_SIDE_LENGTH + 1, SQUARE_SIDE_LENGTH + 1)
   love.graphics.setColor(0, 0, 1)
+  love.graphics.rectangle("line", tiles[first].x * TILE_SCALE - 1, tiles[first].y * TILE_SCALE - 1, SQUARE_SIDE_LENGTH + 1, SQUARE_SIDE_LENGTH + 1)
+  love.graphics.setColor(0, 1, 0)
   love.graphics.rectangle("line", tiles[second].x * TILE_SCALE - 1, tiles[second].y * TILE_SCALE - 1, SQUARE_SIDE_LENGTH + 1, SQUARE_SIDE_LENGTH + 1)
 end
 
