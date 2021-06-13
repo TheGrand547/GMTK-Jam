@@ -149,8 +149,6 @@ function blockFromPoint(x, y)
   return nil
 end
 
---there is a bug here and i can't for the life of me find it, it's exceptionally painful as this messes up my line calculations >:(
---if you fix one thing fix this, so that the proper lines(and thus the eventual checks) can be made without me spending years finding this error
 function centerFromBlock(index)
   local x = 0
   local y = 0
