@@ -10,8 +10,8 @@ function love.load()
   tiles = {}
   enemies = {}
   walls = {3, 13, 23, 24, 25, 99, 55, 56, 65, 54, 45} -- wall element is just {tile}
-  table.insert(enemies, {tileLocation = 20, type = types.BASIC, hp = 5, flag = false})
-  table.insert(enemies, {tileLocation = 40, type = types.ALT_BASIC, hp = 3, flag = false})
+  table.insert(enemies, makeFoe(20, types.BASIC))
+  table.insert(enemies, makeFoe(40, types.ALT_BASIC))
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
       table.insert(tiles, {x = x1, y = y1, clicked = 0})
@@ -32,6 +32,9 @@ function love.update(dt)
     playerTurn = true
   elseif not playerTurn then
     doFoeStuff(enemies, playerPrimary, playerSecondary, tiles, walls)
+    for i, foe in ipairs(enemies) do
+      foe.flag = false
+    end
     playerTurn = true
   end
 end

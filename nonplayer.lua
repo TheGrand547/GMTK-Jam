@@ -4,7 +4,7 @@ require("constants")
 require("astar")
 
 types = {BASIC = 1, ALT_BASIC = 2, ADVANCED = 3, FAST = 4, ALT_FAST = 5, ADVANCED_FAST = 6}
--- TODO, different colors per type, end state of each one, reset foe[4] flag each time, then file -> maps, then UI polish stuff
+-- TODO, different colors per type, end state of each one, then file -> maps, then UI polish stuff
 function doFoeStuff(foes, p1, p2, tiles, walls)
   for i, foe in ipairs(foes) do
     --should be a cleaner way to do this but whatever
@@ -76,6 +76,14 @@ function setFoeColor(foe)
     love.graphics.setColor(1, 0, 0)
   elseif foe.type == types.ALT_BASIC then
     love.graphics.setColor(1, .5, 0)
+  elseif foe.type == types.ADVANCED then
+    love.graphics.setColor(.75, .75, 0)
+  elseif foe.type == types.FAST then
+    love.graphics.setColor(.75, .75, .25)
+  elseif foe.type == types.ALT_FAST then
+    love.graphics.setColor(.75, 1, 0)
+  elseif foe.type == types.ADVANCED_FAST then
+    love.graphics.setColor(.5, 1, 0)
   end
 end
 
@@ -100,4 +108,14 @@ function drawTiles(tiles)
       love.graphics.setColor(.5, .5, .5)
     end
   end
+end
+
+function makeFoe(tile, kind)
+  local new = {tileLocation = tile, type = kind, hp = 1, flag = false}
+  if kind == types.ADVANCED then
+    new.hp = 3
+  elseif kind == types.ADVANCED_FAST then
+    new.hp = 2
+  end
+  return new
 end
