@@ -8,17 +8,17 @@ types = {BASIC = 1, ALT_BASIC = 2, ADVANCED = 3, FAST = 4, ALT_FAST = 5, ADVANCE
 function doFoeStuff(foes, p1, p2, tiles, walls)
   for i, foe in ipairs(foes) do
     --should be a cleaner way to do this but whatever
-    if foe[2] == types.BASIC then
+    if foe.type == types.BASIC then
       basicFoe(foe, foes, i, p1, p2, tiles, walls)
-    elseif foe[2] == types.ALT_BASIC then
+    elseif foe.type == types.ALT_BASIC then
       --go for p2 instead of p1
       basicFoe(foe, foes, i, p2, p1, tiles, walls)
-    elseif foe[2] == types.ADVANCED then
+    elseif foe.type == types.ADVANCED then
       advancedFoe(foe, foes, i, p1, p2, tiles, walls)
-    elseif foe[2] == types.FAST then
+    elseif foe.type == types.FAST then
       basicFoe(foe, foes, i, p1, p2, tiles, walls)
       basicFoe(foe, foes, i, p1, p2, tiles, walls)
-    elseif foe[2] == types.ALT_FAST then
+    elseif foe.type == types.ALT_FAST then
       --go for p2 instead of p1
       basicFoe(foe, foes, i, p2, p1, tiles, walls)
       basicFoe(foe, foes, i, p2, p1, tiles, walls)
@@ -30,8 +30,8 @@ function doFoeStuff(foes, p1, p2, tiles, walls)
 end
 
 function advancedFoe(foe, foes, i, p1, p2, tiles, walls)
-  local one = heuristic(foe[1], p1)
-  local two = heuristic(foe[1], p2)
+  local one = heuristic(foe.pos, p1)
+  local two = heuristic(foe.pos, p2)
   -- go to the closer of the two
   if one < two then
     basicFoe(foe, foes, i, p1, p2, tiles, walls)
@@ -41,40 +41,40 @@ function advancedFoe(foe, foes, i, p1, p2, tiles, walls)
 end
 
 function basicFoe(foe, foes, i, p1, p2, tiles, walls)
-  if tiles[foe[1]].clicked > 0 and not foe[4] then
-    foe[3] = foe[3] - 1
-    if foe[3] == 0 then 
+  if tiles[foe.tileLocation].clicked > 0 and not foe.flag then
+    foe.hp = foe.hp - 1
+    if foe.hp == 0 then 
       table.remove(foes, i)
       return
     end
-    foe[4] = true
+    foe.flag = true
   end
-  local new = astar(foe[1], walls, p1, tiles)
+  local new = astar(foe.tileLocation, walls, p1, tiles)
   if new ~= null then 
-    foe[1] = new 
+    foe.tileLocation = new 
   end
 end
 
 function drawFoes(foes, tiles)
   for i, foe in ipairs(foes) do
     setFoeColor(foe)
-    love.graphics.rectangle("fill", tiles[foe[1]].x * TILE_SCALE, tiles[foe[1]].y * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
+    love.graphics.rectangle("fill", tiles[foe.tileLocation].x * TILE_SCALE, tiles[foe.tileLocation].y * TILE_SCALE, SQUARE_SIDE_LENGTH, SQUARE_SIDE_LENGTH)
     drawHealth(foe, tiles)
   end
 end
 
 function drawHealth(foe, tiles) 
-  for i = 1, foe[3] + 1, 1 do
+  for i = 1, foe.hp + 1, 1 do
     love.graphics.setColor(1, 1, .84 - (1.0 / (i + 1)))
-    love.graphics.rectangle("line", tiles[foe[1]].x * TILE_SCALE + i, tiles[foe[1]].y * TILE_SCALE + i, SQUARE_SIDE_LENGTH - 2 * i, SQUARE_SIDE_LENGTH - 2 * i)
+    love.graphics.rectangle("line", tiles[foe.tileLocation].x * TILE_SCALE + i, tiles[foe.tileLocation].y * TILE_SCALE + i, SQUARE_SIDE_LENGTH - 2 * i, SQUARE_SIDE_LENGTH - 2 * i)
   end
 end
 
 
 function setFoeColor(foe)
-  if foe[2] == types.BASIC  then
+  if foe.type == types.BASIC  then
     love.graphics.setColor(1, 0, 0)
-  elseif foe[2] == types.ALT_BASIC then
+  elseif foe.type == types.ALT_BASIC then
     love.graphics.setColor(1, .5, 0)
   end
 end
