@@ -10,8 +10,8 @@ function love.load()
   tiles = {}
   enemies = {}
   walls = {3, 13, 23, 24, 25, 99, 55, 56, 65, 54, 45} -- wall element is just {tile}
-  table.insert(enemies, {{0, 0, 1}, 20, BASIC})
-  table.insert(enemies, {{0, 0, 1}, 40, BASIC})
+  table.insert(enemies, {20, types.BASIC, 5, false})
+  table.insert(enemies, {40, types.ALT_BASIC, 3, false})
   for y1 = 1, HEIGHT, 1 do
     for x1 = 1, WIDTH, 1 do
       table.insert(tiles, {x = x1, y = y1, clicked = 0})
@@ -30,14 +30,14 @@ function love.update(dt)
   -- no enemies left -> free movement
   if table.getn(enemies) == 0 then
     playerTurn = true
-  elseif playerTurn == false then
+  elseif not playerTurn then
     doFoeStuff(enemies, playerPrimary, playerSecondary, tiles, walls)
     playerTurn = true
   end
 end
 
 function love.keypressed(key, scancode, isrepeat)
-  if playerTurn == true and isrepeat == false then
+  if playerTurn and not isrepeat then
     if key == "space" then
       playerTurn = false
       local temp = playerPrimary
