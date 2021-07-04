@@ -27,7 +27,7 @@ function love.load()
   end
   love.window.requestAttention()
   love.graphics.setBackgroundColor(0, 0, 0)
-  currentLevel = 0
+  currentLevel = 5
   largest = 1000
   gameOver = false
   loadCurrentLevel()

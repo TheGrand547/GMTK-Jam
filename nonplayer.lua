@@ -65,8 +65,9 @@ end
 
 function drawHealth(foe, tiles) 
   for i = 1, foe.hp + 1, 1 do
-    love.graphics.setColor(1, 1, .84 - (1.0 / (i + 1)))
-    love.graphics.rectangle("line", tiles[foe.tileLocation].x * TILE_SCALE + i, tiles[foe.tileLocation].y * TILE_SCALE + i, SQUARE_SIDE_LENGTH - 2 * i, SQUARE_SIDE_LENGTH - 2 * i)
+    love.graphics.setColor(0, 0, 0)
+    local j = 2 * i
+    love.graphics.rectangle("line", tiles[foe.tileLocation].x * TILE_SCALE + j, tiles[foe.tileLocation].y * TILE_SCALE + j, SQUARE_SIDE_LENGTH - 2 * j, SQUARE_SIDE_LENGTH - 2 * j)
   end
 end
 
